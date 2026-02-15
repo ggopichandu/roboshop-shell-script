@@ -90,4 +90,5 @@ then
     mongosh --host $MONGO_HOST </app/schema/catalogue.js
     VALIDATE $? "Loading catalogue data"
 else
-    echo -e "schema already exists...$Y SKIPPING $N"    
+    echo -e "schema already exists...$Y SKIPPING $N"
+fi        
