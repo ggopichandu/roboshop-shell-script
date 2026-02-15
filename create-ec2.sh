@@ -11,3 +11,4 @@ else
 fi
 echo "Creating instance for: $name with instance type: $instance_type"
 instance_id=$(aws ec2 run-instances --image-id ami-0220d79f3f480ecf5 --instance-type $instance_type --security-group-ids sg-046836072ceb917dd --subnet-id subnet-0546bcf98efcaa4a4 --query 'Instances[0].InstanceId' --output text)
+done
