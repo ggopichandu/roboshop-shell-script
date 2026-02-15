@@ -1,6 +1,8 @@
 #!/bin/bash
 
 instances=("mangodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipping" "payment" "web")
+domain_name="gopichand.online"
+hosted_zone_id="Z05089881SMV5BSCETO2M"
 
 for name in ${instances[@]}; do
     if [ $name == "shipping" ] || [ $name == "mysql" ]
@@ -14,6 +16,32 @@ for name in ${instances[@]}; do
 
     aws ec2 create-tags --resources $instance_id --tags Key=Name,Value=$name
 
-    iprivate_ip=$(aws ec2 describe-instances --instance-ids $instance_id --query 'Reservations[0].Instances[0].[PrivateIpAddress]' --output text)
-    
+    private_ip=$(aws ec2 describe-instances --instance-ids $instance_id --query 'Reservations[0].Instances[0].[PrivateIpAddress]' --output text)
+
+    if [ $name == "web" ]
+    then
+        aws ec2 wait instance-running --instance-ids $instance_id
+        public_ip=$(aws ec2 describe-instances --instance-ids $instance_id --query 'Reservations[0].Instances[0].[PublicIpAddress]' --output text)
+        ip_to_use=$public_ip
+    else
+        private_ip=$(aws ec2 describe-instances --instance-ids $instance_id --query 'Reservations[0].Instances[0].[PrivateIpAddress]' --output text)
+        ip_to_use=$private_ip
+    fi
+
+    aws route53 change-resource-record-sets --hosted-zone-id $hosted_zone_id --change-batch '
+    {
+        "Comment": "Creating a record set for '$name'"
+        ,"Changes": [{
+        "Action"              : "CREATE"
+        ,"ResourceRecordSet"  : {
+            "Name"              : "'$name.$domain_name'"
+            ,"Type"             : "A"
+            ,"TTL"              : 1
+            ,"ResourceRecords"  : [{
+                "Value"         : "'$ip_to_use'"
+            }]
+        }
+        }]
+    }'
+
 done
