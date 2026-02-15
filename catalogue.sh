@@ -87,7 +87,7 @@ SCHEMA_EXISTS=$(mongosh --host $MONGO_HOST --quiet --eval "db.getMongo().getDBNa
 if [ $SCHEMA_EXISTS -lt 0 ]
 then 
     echo "Schema does not exits...LOADING"
-    mongosh --host $MONGO_HOST </app/schema/catalogue.js
+    mongosh --host $MONGO_HOST </app/schema/catalogue.js &>> $LOGFILE
     VALIDATE $? "Loading catalogue data"
 else
     echo -e "schema already exists...$Y SKIPPING $N"
