@@ -2,7 +2,7 @@
 
 instances=("mangodb" "redis" "mysql" "rabbitmq" "catalogue" "user" "cart" "shipping" "payment" "web")
 
-for name in ${instances(@)}; do
+for name in ${instances[@]}; do
     if [ $name == "shipping" ] || [ $name == "mysql" ]
     then
     instance_type="t3.medium"
