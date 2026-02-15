@@ -74,3 +74,9 @@ VALIDATE $? "Enable catalogue"
 
 systemctl start catalogue &>> $LOGFILE
 VALIDATE $? "Starting catalogue"
+
+cp /home/ec2-user/roboshop-shell-script/mongo.repo /etc/yum.repos.d/mongo.repo &>> $LOGFILE
+VALIDATE $? "Copying mongo repo"
+
+dnf install -y mongodb-mongosh &>> $LOGFILE
+VALIDATE $? "Installing mongo client"
