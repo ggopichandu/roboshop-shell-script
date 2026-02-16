@@ -88,3 +88,6 @@ then
 else
     echo -e "Schema already exits... $Y SKIPPING $N"  
 fi
+
+systemctl restart shipping &>> $LOGFILE
+VALIDATE $? "Restarting Shipping"
